@@ -85,11 +85,11 @@ template.add_resource(ec2.SubnetRouteTableAssociation(
 ))
 
 template.add_resource(ec2.Route(
-    'subletPrivInstanceNateRoute',
+    'subletPrivInstanceNatRoute',
     RouteTableId=Ref(subnetPubRouteTable),
     DestinationCidrBlock='0.0.0.0/0',
     GatewayId=Ref(internetGateway),
-    DependsOn=Ref(vpcInternetGatewayAttachment)
+    DependsOn=vpcInternetGatewayAttachment.title
 ))
 
 
@@ -144,7 +144,7 @@ instanceNAT = template.add_resource(ec2.Instance(
 
 instanceNATEIP = template.add_resource(ec2.EIP(
     'instanceNATEIP',
-    DependsOn=Ref(vpcInternetGatewayAttachment)
+    DependsOn=vpcInternetGatewayAttachment.title
 ))
 
 instanceNATEIPAssociation = template.add_resource(ec2.EIPAssociation(
@@ -158,7 +158,7 @@ template.add_resource(ec2.Route(
     RouteTableId=Ref(subnetPrivRouteTable),
     DestinationCidrBlock='0.0.0.0/0',
     InstanceId=Ref(instanceNAT),
-    DependsOn=Ref(instanceNAT)
+    DependsOn=instanceNAT.title
 ))
 
 print(template.to_json())
