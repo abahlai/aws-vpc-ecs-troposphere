@@ -5,7 +5,7 @@
   },
   {
     "ParameterKey": "natKeyName",
-    "ParameterValue": "m1.micro"
+    "ParameterValue": "bastion"
   },
   {
     "ParameterKey": "natIP",

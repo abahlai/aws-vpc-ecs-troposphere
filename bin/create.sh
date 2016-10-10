@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-STACK_NAME=vpc
 
 SCRIPT_PATH="${BASH_SOURCE[0]}";
 if ([ -h "${SCRIPT_PATH}" ]) then

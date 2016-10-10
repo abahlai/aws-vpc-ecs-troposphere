@@ -58,6 +58,7 @@ internetGateway = template.add_resource(ec2.InternetGateway(
 
 vpcInternetGatewayAttachment = template.add_resource(ec2.VPCGatewayAttachment(
     'vpcInternetGateway',
+    InternetGatewayId=Ref(internetGateway),
     VpcId=Ref(vpc)
 ))
 
