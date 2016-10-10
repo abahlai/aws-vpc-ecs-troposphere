@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
-    "vpc4e3d202b": {
+    "myVPC": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
         "CidrBlock": "10.0.0.0/16",
@@ -16,13 +16,13 @@
         ]
       }
     },
-    "subnet7758ff13": {
+    "subnetPub": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.0.0/24",
         "AvailabilityZone": "us-west-1b",
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         },
         "Tags": [
           {
@@ -32,13 +32,13 @@
         ]
       }
     },
-    "subnet7658ff12": {
+    "subnetPriv": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.1.0/24",
         "AvailabilityZone": "us-west-1b",
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         },
         "Tags": [
           {
@@ -48,7 +48,7 @@
         ]
       }
     },
-    "igwe2a3cb87": {
+    "internetGateway": {
       "Type": "AWS::EC2::InternetGateway",
       "Properties": {
       }
@@ -66,27 +66,27 @@
       "Type": "AWS::EC2::NetworkAcl",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         }
       }
     },
-    "rtb67996103": {
+    "subnetPrivRouteTable": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         }
       }
     },
-    "rtb61996105": {
+    "subnetPubRouteTable": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         }
       }
     },
-    "eip529183159": {
+    "instanceNATEIP": {
       "Type": "AWS::EC2::EIP",
       "DependsOn": [
         "gw2"
@@ -109,7 +109,7 @@
         "MinSize": "0",
         "VPCZoneIdentifier": [
           {
-            "Ref": "subnet7658ff12"
+            "Ref": "subnetPriv"
           }
         ],
         "LaunchConfigurationName": {
@@ -152,7 +152,7 @@
         ]
       }
     },
-    "instanceicc57f85b": {
+    "instanceNAT": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
         "DisableApiTermination": "false",
@@ -166,7 +166,7 @@
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
             "SubnetId": {
-              "Ref": "subnet7758ff13"
+              "Ref": "subnetPub"
             },
             "PrivateIpAddresses": [
               {
@@ -207,7 +207,7 @@
       "Properties": {
         "GroupDescription": "default VPC security group",
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         }
       }
     },
@@ -319,7 +319,7 @@
           "Ref": "acl61b64505"
         },
         "SubnetId": {
-          "Ref": "subnet7758ff13"
+          "Ref": "subnetPub"
         }
       }
     },
@@ -330,7 +330,7 @@
           "Ref": "acl61b64505"
         },
         "SubnetId": {
-          "Ref": "subnet7658ff12"
+          "Ref": "subnetPriv"
         }
       }
     },
@@ -338,10 +338,10 @@
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         },
         "InternetGatewayId": {
-          "Ref": "igwe2a3cb87"
+          "Ref": "internetGateway"
         }
       }
     },
@@ -349,10 +349,10 @@
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
         "RouteTableId": {
-          "Ref": "rtb61996105"
+          "Ref": "subnetPubRouteTable"
         },
         "SubnetId": {
-          "Ref": "subnet7758ff13"
+          "Ref": "subnetPub"
         }
       }
     },
@@ -361,10 +361,10 @@
       "Properties": {
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
-          "Ref": "rtb67996103"
+          "Ref": "subnetPrivRouteTable"
         },
         "InstanceId": {
-          "Ref": "instanceicc57f85b"
+          "Ref": "instanceNAT"
         }
       }
     },
@@ -373,10 +373,10 @@
       "Properties": {
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
-          "Ref": "rtb61996105"
+          "Ref": "subnetPubRouteTable"
         },
         "GatewayId": {
-          "Ref": "igwe2a3cb87"
+          "Ref": "internetGateway"
         }
       },
       "DependsOn": "gw2"
@@ -385,7 +385,7 @@
       "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc4e3d202b"
+          "Ref": "myVPC"
         },
         "DhcpOptionsId": {
           "Ref": "dopte5e1a580"
@@ -397,12 +397,12 @@
       "Properties": {
         "AllocationId": {
           "Fn::GetAtt": [
-            "eip529183159",
+            "instanceNATEIP",
             "AllocationId"
           ]
         },
         "InstanceId": {
-          "Ref": "instanceicc57f85b"
+          "Ref": "instanceNAT"
         }
       }
     },

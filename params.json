@@ -1,0 +1,10 @@
+[
+  {
+    "ParameterKey": "vpcName",
+    "ParameterValue": "xxxxMyVPC"
+  },
+  {
+    "ParameterKey": "natKeyName",
+    "ParameterValue": "m1.micro"
+  }
+]
