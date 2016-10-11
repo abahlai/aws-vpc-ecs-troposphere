@@ -183,110 +183,8 @@
         ]
       }
     },
-    "topicmyVPCAutoscalingGroupAlarm": {
-      "Type": "AWS::SNS::Topic",
-      "Properties": {
-        "DisplayName": "myVPCAutoscalingGroupAlarm",
-        "Subscription": [
-          {
-            "Endpoint": "kopachevsky@gmail.com",
-            "Protocol": "email"
-          }
-        ]
-      }
-    },
-    "sgAutoScalingSecurityGroup1": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "AutoScaling-Security-Group-1 (2016-10-09 19:41:22.248+03:00)",
-        "VpcId": "vpc-6e181f0b"
-      }
-    },
-    "sgdefault": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "default VPC security group",
-        "VpcId": {
-          "Ref": "myVPC"
-        }
-      }
-    },
-    "snspolicymyVPCAutoscalingGroupAlarm": {
-      "Type": "AWS::SNS::TopicPolicy",
-      "Properties": {
-        "Topics": [
-          {
-            "Ref": "topicmyVPCAutoscalingGroupAlarm"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2008-10-17",
-          "Id": "__default_policy_ID",
-          "Statement": [
-            {
-              "Sid": "__default_statement_ID",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Action": [
-                "SNS:GetTopicAttributes",
-                "SNS:SetTopicAttributes",
-                "SNS:AddPermission",
-                "SNS:RemovePermission",
-                "SNS:DeleteTopic",
-                "SNS:Subscribe",
-                "SNS:ListSubscriptionsByTopic",
-                "SNS:Publish",
-                "SNS:Receive"
-              ],
-              "Resource": {
-                "Ref": "topicmyVPCAutoscalingGroupAlarm"
-              },
-              "Condition": {
-                "StringEquals": {
-                  "AWS:SourceOwner": "424632819416"
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "scalingIncreaseGroupSize": {
-      "Type": "AWS::AutoScaling::ScalingPolicy",
-      "Properties": {
-        "AdjustmentType": "ChangeInCapacity",
-        "AutoScalingGroupName": {
-          "Ref": "asgmyVPCAutoScalingGroup"
-        }
-      }
-    },
-    "alarmawsec2myVPCAutoScalingGroupCPUUtilization": {
-      "Type": "AWS::CloudWatch::Alarm",
-      "Properties": {
-        "ActionsEnabled": "true",
-        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "EvaluationPeriods": "1",
-        "MetricName": "CPUUtilization",
-        "Namespace": "AWS/EC2",
-        "Period": "300",
-        "Statistic": "Average",
-        "Threshold": "80.0",
-        "AlarmActions": [
-          {
-            "Ref": "scalingIncreaseGroupSize"
-          },
-          "arn:aws:sns:us-west-1:424632819416:myVPCAutoscalingGroupAlarm"
-        ],
-        "Dimensions": [
-          {
-            "Name": "AutoScalingGroupName",
-            "Value": "myVPCAutoScalingGroup"
-          }
-        ]
-      }
-    },
+
+
     "acl3": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
@@ -334,6 +232,11 @@
         }
       }
     },
+
+
+
+
+
     "gw2": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {

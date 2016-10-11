@@ -5,7 +5,7 @@
   },
   {
     "ParameterKey": "natKeyName",
-    "ParameterValue": "bastion"
+    "ParameterValue": "default"
   },
   {
     "ParameterKey": "natIP",

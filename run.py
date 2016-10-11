@@ -43,6 +43,15 @@ template.add_resource(ec2.SecurityGroupIngress(
     IpProtocol='-1'
 ))
 
+template.add_resource(ec2.SecurityGroupIngress(
+    'vpcSGDefaultIngressSSH',
+    GroupId=Ref(vpcSecurityGroupDefault),
+    IpProtocol='-1',
+    FromPort='-1',
+    ToPort='22',
+    CidrIp='0.0.0.0/0'
+))
+
 template.add_resource(ec2.SecurityGroupEgress(
     'vpcSGDefaultEgress',
     GroupId=Ref(vpcSecurityGroupDefault),
@@ -138,6 +147,22 @@ instanceNAT = template.add_resource(ec2.Instance(
                     PrivateIpAddress=Ref(natIP),
                 )
             ],
+            GroupSet=[Ref(vpcSecurityGroupDefault)]
+        )
+    ]
+))
+
+instancePrivate = template.add_resource(ec2.Instance(
+    'instancePrivate',
+    ImageId='ami-de347abe',
+    InstanceType='t2.micro',
+    KeyName=Ref(natKeyName),
+    NetworkInterfaces=[
+        ec2.NetworkInterfaceProperty(
+            'natNetworkInterfaceInstancePrivate',
+            Description='private insatnce network interface',
+            SubnetId=Ref(subnetPriv),
+            DeviceIndex=0,
             GroupSet=[Ref(vpcSecurityGroupDefault)]
         )
     ]
