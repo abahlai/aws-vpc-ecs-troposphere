@@ -134,6 +134,7 @@ instanceNAT = template.add_resource(ec2.Instance(
     ImageId='ami-7da94839',
     InstanceType='t2.micro',
     KeyName=Ref(natKeyName),
+    SourceDestCheck='false',
     NetworkInterfaces=[
         ec2.NetworkInterfaceProperty(
             'natNetworkInterface',
