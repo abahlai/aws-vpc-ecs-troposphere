@@ -2,5 +2,13 @@
   {
     "ParameterKey": "vpcName",
     "ParameterValue": "xxxxMyVPC"
+  },
+  {
+    "ParameterKey": "natKeyName",
+    "ParameterValue": "default"
+  },
+  {
+    "ParameterKey": "natIP",
+    "ParameterValue": "10.0.0.30"
   }
 ]
