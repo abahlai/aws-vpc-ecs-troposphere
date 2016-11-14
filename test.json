@@ -1,0 +1,65 @@
+{
+    "Parameters": {
+        "vpcName": {
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "myVpc": {
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "vpcName"
+                        }
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::VPC"
+        },
+        "vpcSGDefaultEgress": {
+            "Properties": {
+                "CidrIp": "0.0.0.0/0",
+                "FromPort": "-1",
+                "GroupId": {
+                    "Ref": "vpcSecurityGroupDefault"
+                },
+                "IpProtocol": "-1",
+                "ToPort": "-1"
+            },
+            "Type": "AWS::EC2::SecurityGroupEgress"
+        },
+        "vpcSGDefaultIngressInsideVPC": {
+            "Properties": {
+                "GroupId": {
+                    "Ref": "vpcSecurityGroupDefault"
+                },
+                "IpProtocol": "-1"
+            },
+            "Type": "AWS::EC2::SecurityGroupIngress"
+        },
+        "vpcSGDefaultIngressSSH": {
+            "Properties": {
+                "CidrIp": "0.0.0.0/0",
+                "FromPort": "-1",
+                "GroupId": {
+                    "Ref": "vpcSecurityGroupDefault"
+                },
+                "IpProtocol": "-1",
+                "ToPort": "22"
+            },
+            "Type": "AWS::EC2::SecurityGroupIngress"
+        },
+        "vpcSecurityGroupDefault": {
+            "Properties": {
+                "GroupDescription": "default VPC security group",
+                "VpcId": {
+                    "Ref": "myVpc"
+                }
+            },
+            "Type": "AWS::EC2::SecurityGroup"
+        }
+    }
+}
