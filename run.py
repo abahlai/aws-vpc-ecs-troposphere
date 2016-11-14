@@ -49,6 +49,16 @@ template.add_resource(ec2.SecurityGroupEgress(
     CidrIp='0.0.0.0/0'
 ))
 
+internetGateway = template.add_resource(ec2.InternetGateway(
+    'internetGateway'
+))
+
+vpcInternetGatewayAttachment = template.add_resource(ec2.VPCGatewayAttachment(
+    'vpcInternetGateway',
+    InternetGatewayId=Ref(internetGateway),
+    VpcId=Ref(vpc)
+))
+
 subnetPub = template.add_resource(ec2.Subnet(
     'subnetPub',
     CidrBlock=cidr_subnet_pub,
@@ -70,6 +80,14 @@ template.add_resource(ec2.SubnetRouteTableAssociation(
     'pubSubnetRouteTableAssociation',
     RouteTableId=Ref(subnetPubRouteTable),
     SubnetId=Ref(subnetPub)
+))
+
+template.add_resource(ec2.Route(
+    'subletPrivInstanceNatRoute',
+    RouteTableId=Ref(subnetPubRouteTable),
+    DestinationCidrBlock='0.0.0.0/0',
+    GatewayId=Ref(internetGateway),
+    DependsOn=vpcInternetGatewayAttachment.title
 ))
 
 print(template.to_json())
