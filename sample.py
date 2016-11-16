@@ -95,20 +95,49 @@ SubnetRouteTableAssociation(
 )
 
 # NAT
-nat_ip = EIP(
-    "NatIp",
-    template=template,
+natinstancetype_param = template.add_parameter(Parameter(
+    "NatInstanceType",
+    Description="NAT InstanceType",
+    Default="t1.micro",
+    Type="String",
+    ))
+
+natimageid_param = template.add_parameter(Parameter(
+    "NatImageId",
+    Description="NAT ImageId",
+    Default="ami-030f4133",
+    Type="String",
+    ))
+
+natkeyname_param = template.add_parameter(Parameter(
+    "NatKeyName",
+    Description="NAT KeyName",
+    Default="keysfortesting",
+    Type="String",
+    ))
+
+	
+NatEIP = template.add_resource(EIP(
+    "NatEIP",
+    InstanceId=Ref("Nat"),
     Domain="vpc",
-)
+))
 
 
-nat_gateway = NatGateway(
-    "NatGateway",
-    template=template,
-    AllocationId=GetAtt(nat_ip, "AllocationId"),
+Nat = template.add_resource(Instance(
+    "Nat",
+    SourceDestCheck="false",
+#    SecurityGroupIds=[Ref(NatSG)],
+    KeyName=Ref(natkeyname_param),
     SubnetId=Ref(public_subnet),
-)
-
+    ImageId=Ref(natimageid_param),
+    InstanceType=Ref(natinstancetype_param),
+#    Tags=Tags(
+#        Name=Join("",[Ref("AWS::StackName"),"-nat"]),
+#    )
+))	
+	
+	
 # Private route table
 private_route_table = RouteTable(
     "PrivateRouteTable",
@@ -122,7 +151,7 @@ private_nat_route = Route(
     template=template,
     RouteTableId=Ref(private_route_table),
     DestinationCidrBlock="0.0.0.0/0",
-    NatGatewayId=Ref(nat_gateway),
+    InstanceId=Ref("Nat"),
 )
 
 
